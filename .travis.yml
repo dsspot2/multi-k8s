@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t shivapotu/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true shivapotu/react-test npm test
+
+after_success:
+  - docker build -t shivapotu/multi-client ./client
+  - docker build -t shivapotu/multi-nginx ./nginx
+  - docker build -t shivapotu/multi-server ./server
+  - docker build -t shivapotu/multi-worker ./worker
